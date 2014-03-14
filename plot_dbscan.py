@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.datasets.samples_generator import make_blobs
-#from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler
 
 
 ##############################################################################
@@ -15,19 +15,26 @@ from sklearn.datasets.samples_generator import make_blobs
 #print X
 #print labels_true
 #X = StandardScaler().fit_transform(X)
-f = open('null', 'r')
+f = open('input_data', 'r')
 fn = f.readlines()
 f.close()
 X = [[] for i in range(10)]
 for i in range(10):
-	X[i] = fn[i] #.strip().split()
-#X = [[1.3 1.2 1.7 1.8 2.0], [2.1 3.1 2.7 2.5 1.1], [1.2 0.9 0.8 1.0 1.1], [2.2 2.4 2.3 2.2 1.9], [1.8 2.2 1.2 1.8 2.3]]
+	X[i] = [float(x) for x in fn[i].strip().split()]
+
+X = np.array(X)
+X_scaled = StandardScaler().fit_transform(X)
 #############################################################################
 # Compute DBSCAN
 #db = DBSCAN(eps=0.3, min_samples=3, metric='precomputed' algorithm='auto', leaf_size30, p=None,random_state=None).fit(X)
-db = DBSCAN(eps=0.3, min_samples=5, metric='precomputed').fit(X)
+db = DBSCAN(eps=0.3, min_samples=5, metric='precomputed').fit(X_scaled)
 core_samples = db.core_sample_indices_
 labels = db.labels_
+
+print("core samples are:")
+print(core_samples)
+print("labels are:")
+print(labels)
 
 # Number of clusters in labels, ignoring noise if present.
 n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
